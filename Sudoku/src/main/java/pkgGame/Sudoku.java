@@ -2,100 +2,135 @@ package pkgGame;
 
 import pkgHelper.LatinSquare;
 
-public class Sudoku extends LatinSquare {
-
+public class Sudoku extends LatinSquare
+{
 	private int iSize;
 	private int iSqrtSize;
 	
 	
-	Sudoku(int iSize)
+	
+	public Sudoku(int iSize) throws Exception
 	{
-		this.iSize = iSize;
-		if (Math.sqrt(iSize) % 1  != 0)
+		try
 		{
-			//throw exception
+			this.iSize = iSize;
+			this.iSqrtSize = (int)Math.sqrt(iSize);
+			
+			if(iSize % 1 != 0)
+			{
+				throw new Exception();
+			}
 		}
-		else 
+		catch (Exception e)
 		{
-			this.iSqrtSize = (int) Math.sqrt(iSize); 
+			throw e; 
 		}
-		
 	}
 	
-	Sudoku(int[][] puzzle)
+	
+	public Sudoku(int[][] puzzle) throws Exception
 	{
-		super.setLatinSquare(puzzle);
+		super(puzzle);
+		
+		try
+		{
+			this.iSize = puzzle.length;
+			this.iSqrtSize = (int)Math.sqrt(iSize);
+			
+			if(iSize % 1 != 0)
+			{
+				throw new Exception();
+			}
+		}
+		catch (Exception e)
+		{
+			throw e; 
+		}
 	}
+	
+	
 	
 	public int[][] getPuzzle()
 	{
 		return super.getLatinSquare();
 	}
 	
+	
 	public int[] getRegion(int r)
 	{
-		int[] reg2arr = new int[super.getLatinSquare().length];
+		int i = (r % iSqrtSize) * iSqrtSize;
+		int j = (r / iSqrtSize) * iSqrtSize;
+		int iMax = i + iSqrtSize; 
+		int jMax = j + iSqrtSize;
+		int iCnt = 0; 
+		int reg[] = new int[super.getLatinSquare().length];
 		
-		 int i = (r % iSqrtSize) * iSqrtSize;
-		 int j = (r / iSqrtSize) * iSqrtSize;
-		 int iMax = i + iSqrtSize;
-		 int jMax = j + iSqrtSize;
-		 int iCount = 0;
-		 
-		 for (; j < jMax; j++)
-		 {
-			 for (i = (r % iSqrtSize) * iSqrtSize; i < iMax; i++)
-			 {
-				 reg2arr[iCount++] = super.getLatinSquare()[j][i];
-			 }
-		 }
-		 
-		 return reg2arr;
-	
+		for (; j < jMax; j++)
+		{
+			for ( i = (r % iSqrtSize) * iSqrtSize; i < iMax; i++)
+			{
+				reg[iCnt++] = super.getLatinSquare()[j][i];
+			}
+		}
+		return reg; 
 	}
+	
 	
 	public int[] getRegion(int iCol, int iRow)
 	{
-		// find the region and run get region
-		int reg = 0;
-		reg = (((iRow/iSqrtSize)*iSqrtSize)+1) + (iCol/iSqrtSize);
-		return getRegion(reg);
+		int add = iCol / iSqrtSize;
+		int mult = iRow / iSqrtSize;
 		
+		return getRegion(iSqrtSize * mult + add);
 	}
+	
 	
 	public boolean isPartialSudoku()
 	{
-		return false;
-	}
-	
-	public boolean isSudoku()
-	{
-		boolean isSudoku = true;
-		boolean isLatinSquare = super.isLatinSquare();
-		for (int i =0; i < iSize; i++)
-		{
-			if (super.hasDuplicates(getRegion(i)))
-			{
-				isSudoku = false;
-			}
-			
-			if (!super.hasAllValues(getRegion(0), getRegion(i)))
-			{
-				isSudoku = false;
-			}
-			
-		}
+		boolean isPartialSudoku = true;
 		
-		if (isSudoku && isLatinSquare)
-		{
-			return true;	
-		}
-		else
+		if (!ContainsZero())
 		{
 			return false;
 		}
 		
+		return isPartialSudoku;
 	}
+		
+		
+		
+	
+	
+	public boolean isSudoku()
+	{
+		boolean isPartialSudoku = true;
+		
+		if (!super.isLatinSquare()) //checks for latinsquare
+		{
+			isPartialSudoku = false;
+		}
+		
+		for (int i = 0; i < iSize; i++) //checks for duplicates and has all values
+		{
+			if (super.hasDuplicates(getRegion(i)))
+			{
+				isPartialSudoku = false;
+			}
+			
+			if (!super.hasAllValues(super.getRow(0), getRegion(i)))
+			{
+				isPartialSudoku = false;
+			}
+		}
+		
+		if (isPartialSudoku && !super.ContainsZero()) //checks for zeroes
+		{
+			return true;
+		}
+		
+		return false;
+	}
+	
 	
 	public boolean isValidValue(int iCol, int iRow, int iValue)
 	{
@@ -105,12 +140,7 @@ public class Sudoku extends LatinSquare {
 		{
 			isValidValue = false;
 		}
-	
 		return isValidValue;
 	}
-	
-	
-	
-	
-	
 }
+
