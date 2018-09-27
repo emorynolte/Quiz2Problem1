@@ -17,7 +17,7 @@ public class CarPayment {
 	// constructor to fill the attributes, I am assuming the user would be inputing their interest rate as a whole number rather than its decimal equivalent
 	
 	public CarPayment(double totalCost, int downPayment, int loanLength, double interestRate) {
-		super();
+		
 		this.totalCost = totalCost;
 		this.downPayment = downPayment;
 		this.loanLength = loanLength;
