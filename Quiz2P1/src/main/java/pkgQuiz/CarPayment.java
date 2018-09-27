@@ -18,6 +18,7 @@ public class CarPayment {
 	
 	public CarPayment(double totalCost, int downPayment, int loanLength, double interestRate) {
 		
+		
 		this.totalCost = totalCost;
 		this.downPayment = downPayment;
 		this.loanLength = loanLength;
